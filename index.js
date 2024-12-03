@@ -2,6 +2,27 @@ import express from "express"
 import dotenv from "dotenv"
 dotenv.config()
 import sequelize from "./db.js"
+import {
+  Users,
+  Statuses,
+  Roles,
+  Reviews,
+  Trainers,
+  Specializations,
+  TrainerSpecializations,
+  TrainerReviews,
+  TrainingPackages,
+  TrainingPackageTypes,
+  UserTrainingPackages,
+  News,
+  NewsDocuments,
+  NewsStatuses,
+  Memberships,
+  MembershipTypes,
+  Promotions,
+  UserMemberships,
+  UserMembershipFreezings
+} from "./models/index.js"
 import cors from "cors"
 
 const PORT = process.env.PORT || 4000
