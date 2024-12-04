@@ -24,7 +24,7 @@ import {
   UserMembershipFreezings
 } from "./models/index.js"
 import cors from "cors"
-import router from "./routes/index.js"
+import router from "./router/index.js"
 
 const PORT = process.env.PORT || 4000
 

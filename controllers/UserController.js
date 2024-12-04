@@ -15,11 +15,11 @@ class UserController {
 
   }
 
-  async updateUser(req, res) {
+  async getAllUsers(req, res) {
 
   }
 
-  async getAllUsers(req, res) {
+  async updateUser(req, res) {
 
   }
 
