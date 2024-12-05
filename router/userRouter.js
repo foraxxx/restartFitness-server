@@ -5,8 +5,8 @@ const router = new Router()
 
 router.post('/registration', UserController.registration)
 router.post('/login', UserController.login)
-router.get('/auth', UserController.check)
-router.get('/profile', UserController.getUser)
+router.post('/logout', UserController.logout)
+router.get('/refresh', UserController.refresh)
 
 export default router
 
