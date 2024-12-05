@@ -213,7 +213,7 @@ Users.hasMany(Tokens)
 Tokens.belongsTo(Users)
 
 Roles.hasMany(Users)
-Users.belongsTo(Users)
+Users.belongsTo(Roles)
 
 export {
   Users,
