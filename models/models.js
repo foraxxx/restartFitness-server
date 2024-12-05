@@ -12,7 +12,7 @@ const Users = sequelize.define("Users", {
 
 const Tokens = sequelize.define("Tokens", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  refreshToken: {type: DataTypes.STRING, required: true},
+  refreshToken: {type: DataTypes.TEXT, required: true},
 })
 
 const Statuses = sequelize.define("Statuses", {
