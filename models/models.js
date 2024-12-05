@@ -3,42 +3,42 @@ import { DataTypes } from "sequelize"
 
 const Users = sequelize.define("Users", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  name: {type: DataTypes.STRING(100), allowNull: false},
-  surName: {type: DataTypes.STRING(100), allowNull: false},
-  number: {type: DataTypes.INTEGER, allowNull: false, unique: true},
+  name: {type: DataTypes.STRING(100), allowNull: false, required: true},
+  surName: {type: DataTypes.STRING(100), allowNull: false, required: true},
+  number: {type: DataTypes.INTEGER, allowNull: false, unique: true, required: true},
   email: {type: DataTypes.STRING(100), allowNull: true},
   avatar: {type: DataTypes.STRING(255), allowNull: true},
 })
 
 const Statuses = sequelize.define("Statuses", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  name: {type: DataTypes.STRING(20), allowNull: false},
+  name: {type: DataTypes.STRING(20), allowNull: false, required: true},
 })
 
 const Roles = sequelize.define("Roles", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  name: {type: DataTypes.STRING(100), allowNull: false, unique: true},
+  name: {type: DataTypes.STRING(100), allowNull: false, unique: true, required: true},
 })
 
 const Reviews = sequelize.define("Reviews", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  description: {type: DataTypes.TEXT, allowNull: false},
-  rating: {type: DataTypes.DECIMAL(2,1), allowNull: false},
-  isAnonymous: {type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false},
+  description: {type: DataTypes.TEXT, allowNull: false, required: true},
+  rating: {type: DataTypes.DECIMAL(2,1), allowNull: false, required: true},
+  isAnonymous: {type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false, required: true},
 })
 
 const Trainers = sequelize.define("Trainers", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  bio: {type: DataTypes.TEXT, allowNull: false},
-  experience: {type: DataTypes.INTEGER, allowNull: false},
-  photo: {type: DataTypes.STRING(255), allowNull: true},
+  bio: {type: DataTypes.TEXT, allowNull: false, required: true},
+  experience: {type: DataTypes.INTEGER, allowNull: false, required: true},
+  photo: {type: DataTypes.STRING(255), allowNull: true, required: true},
   rating: {type: DataTypes.DECIMAL(2,1), allowNull: false, defaultValue: 0.0},
-  vkLink: {type: DataTypes.STRING(100), allowNull: false},
+  vkLink: {type: DataTypes.STRING(100), allowNull: false, required: true},
 })
 
 const Specializations = sequelize.define("Specializations", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  name: {type: DataTypes.STRING(100), allowNull: false},
+  name: {type: DataTypes.STRING(100), allowNull: false, required: true},
 })
 
 const TrainerSpecializations = sequelize.define("TrainerSpecializations", {
@@ -47,65 +47,65 @@ const TrainerSpecializations = sequelize.define("TrainerSpecializations", {
 
 const TrainerReviews = sequelize.define("TrainerReviews", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  description: {type: DataTypes.TEXT, allowNull: false},
-  rating: {type: DataTypes.DECIMAL(2,1), allowNull: false},
-  isAnonymous: {type: DataTypes.BOOLEAN, allowNull: false},
+  description: {type: DataTypes.TEXT, allowNull: false, required: true},
+  rating: {type: DataTypes.DECIMAL(2,1), allowNull: false, required: true},
+  isAnonymous: {type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false, required: true},
 })
 
 const TrainingPackages = sequelize.define("TrainingPackages", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  description: {type: DataTypes.TEXT, allowNull: false},
-  countTrainings: {type: DataTypes.INTEGER, allowNull: false},
-  packageDurationDays: {type: DataTypes.INTEGER, allowNull: false},
-  price: {type: DataTypes.INTEGER, allowNull: false},
+  description: {type: DataTypes.TEXT, allowNull: false, required: true},
+  countTrainings: {type: DataTypes.INTEGER, allowNull: false, required: true},
+  packageDurationDays: {type: DataTypes.INTEGER, allowNull: false, required: true},
+  price: {type: DataTypes.INTEGER, allowNull: false, required: true},
 })
 
 const TrainingPackageTypes = sequelize.define("TrainingPackageTypes", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  name: {type: DataTypes.STRING(100), allowNull: false},
-  maxClientCount: {type: DataTypes.INTEGER, allowNull: false},
+  name: {type: DataTypes.STRING(100), allowNull: false, required: true},
+  maxClientCount: {type: DataTypes.INTEGER, allowNull: false, required: true},
 })
 
 const UserTrainingPackages = sequelize.define("UserTrainingPackages", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  dateStart: {type: DataTypes.DATE, allowNull: false},
-  dateEnd: {type: DataTypes.DATE, allowNull: false},
-  countTrainings: {type: DataTypes.INTEGER, allowNull: false},
-  price: {type: DataTypes.INTEGER, allowNull: false},
+  dateStart: {type: DataTypes.DATE, allowNull: false, required: true},
+  dateEnd: {type: DataTypes.DATE, allowNull: false, required: true},
+  countTrainings: {type: DataTypes.INTEGER, allowNull: false, required: true},
+  price: {type: DataTypes.INTEGER, allowNull: false, required: true},
 })
 
 const News = sequelize.define("News", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  text: {type: DataTypes.TEXT, allowNull: false},
-  publicationDate: {type: DataTypes.DATE, allowNull: false},
+  text: {type: DataTypes.TEXT, allowNull: false, required: true},
+  publicationDate: {type: DataTypes.DATE, allowNull: true, required: false},
 })
 
 const NewsDocuments = sequelize.define("NewsDocuments", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  url: {type: DataTypes.STRING(255), allowNull: false},
-  type: {type: DataTypes.STRING(20), allowNull: false},
+  url: {type: DataTypes.STRING(255), allowNull: false, required: true},
+  type: {type: DataTypes.STRING(20), allowNull: false, required: true},
 })
 
 const NewsStatuses = sequelize.define("NewsStatuses", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  name: {type: DataTypes.STRING(20), allowNull: false},
+  name: {type: DataTypes.STRING(20), allowNull: false, required: true},
 })
 
 const Memberships = sequelize.define("Memberships", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  name: {type: DataTypes.STRING(100), allowNull: false},
-  description: {type: DataTypes.TEXT, allowNull: false},
-  photo: {type: DataTypes.STRING(255), allowNull: false},
-  durationDays: {type: DataTypes.INTEGER, allowNull: false},
-  isFreezing: {type: DataTypes.BOOLEAN, allowNull: false},
+  name: {type: DataTypes.STRING(100), allowNull: false, required: true},
+  description: {type: DataTypes.TEXT, allowNull: false, required: true},
+  photo: {type: DataTypes.STRING(255), allowNull: false, required: true},
+  durationDays: {type: DataTypes.INTEGER, allowNull: false, required: true},
+  isFreezing: {type: DataTypes.BOOLEAN, allowNull: false, required: true},
   freezingDays: {type: DataTypes.INTEGER, allowNull: false, defaultValue: 0},
-  price: {type: DataTypes.INTEGER, allowNull: false},
+  price: {type: DataTypes.INTEGER, allowNull: false, required: true},
 })
 
 const MembershipTypes = sequelize.define("MembershipTypes", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  name: {type: DataTypes.STRING(100), allowNull: false},
-  description: {type: DataTypes.TEXT, allowNull: false},
+  name: {type: DataTypes.STRING(100), allowNull: false, required: true},
+  description: {type: DataTypes.TEXT, allowNull: false, required: true},
 })
 
 const Promotions = sequelize.define("Promotions", {
@@ -118,18 +118,18 @@ const Promotions = sequelize.define("Promotions", {
 
 const UserMemberships = sequelize.define("UserMemberships", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  name: {type: DataTypes.STRING(100), allowNull: false},
-  dateStart: {type: DataTypes.DATE, allowNull: false},
-  dateEnd: {type: DataTypes.DATE, allowNull: false},
+  name: {type: DataTypes.STRING(100), allowNull: false, required: true},
+  dateStart: {type: DataTypes.DATE, allowNull: false, required: true},
+  dateEnd: {type: DataTypes.DATE, allowNull: false, required: true},
   freezingDays: {type: DataTypes.INTEGER, allowNull: false, defaultValue: 0},
 })
 
 const UserMembershipFreezings = sequelize.define("UserMembershipFreezings", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  dateStart: {type: DataTypes.DATE, allowNull: false},
-  dateEnd: {type: DataTypes.DATE, allowNull: false},
-  freezingDays: {type: DataTypes.INTEGER, allowNull: false},
-  document: {type: DataTypes.STRING(255), allowNull: false},
+  dateStart: {type: DataTypes.DATE, allowNull: false, required: true},
+  dateEnd: {type: DataTypes.DATE, allowNull: false, required: true},
+  freezingDays: {type: DataTypes.INTEGER, allowNull: false, required: true},
+  document: {type: DataTypes.STRING(255), allowNull: false, required: true},
 })
 
 UserMemberships.hasMany(UserMembershipFreezings)
