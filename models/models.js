@@ -5,7 +5,7 @@ const Users = sequelize.define("Users", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
   name: {type: DataTypes.STRING(100), allowNull: false, required: true},
   surName: {type: DataTypes.STRING(100), allowNull: false, required: true},
-  number: {type: DataTypes.INTEGER, allowNull: false, unique: true, required: true},
+  number: {type: DataTypes.BIGINT, allowNull: false, unique: true, required: true},
   email: {type: DataTypes.STRING(100), allowNull: true},
   avatar: {type: DataTypes.STRING(255), allowNull: true},
 })
