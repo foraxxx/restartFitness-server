@@ -10,6 +10,11 @@ const Users = sequelize.define("Users", {
   avatar: {type: DataTypes.STRING(255), allowNull: true},
 })
 
+const Tokens = sequelize.define("Tokens", {
+  id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+  refreshToken: {type: DataTypes.STRING, required: true},
+})
+
 const Statuses = sequelize.define("Statuses", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
   name: {type: DataTypes.STRING(20), allowNull: false, required: true},
@@ -204,11 +209,15 @@ Trainers.belongsTo(Users)
 Users.hasMany(Reviews)
 Reviews.belongsTo(Users)
 
+Users.hasMany(Tokens)
+Tokens.belongsTo(Users)
+
 Roles.hasMany(Users)
 Users.belongsTo(Users)
 
 export {
   Users,
+  Tokens,
   Statuses,
   Roles,
   Reviews,
