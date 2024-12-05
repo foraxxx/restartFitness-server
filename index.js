@@ -25,11 +25,13 @@ import {
 } from "./models/index.js"
 import cors from "cors"
 import router from "./router/index.js"
+import cookieParser from "cookie-parser"
 
 const PORT = process.env.PORT || 4000
 
 const app = express()
 app.use(cors())
+app.use(cookieParser())
 app.use(express.json())
 app.use('/api', router)
 
