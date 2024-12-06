@@ -9,21 +9,29 @@ class TokenService {
     return {accessToken, refreshToken}
   }
 
-  async saveToken(UserId, refreshToken) {
-    const userTokens = await Tokens.findAll({where: {UserId}})
+  async saveToken(UserId, refreshToken, oldRefreshToken) {
+    const userTokens = await Tokens.findAll({where: {UserId: UserId}})
+
+    console.log(userTokens.length)
 
     if (userTokens.length > 0) {
-      userTokens.forEach((token) => {
-        if (token.refreshToken === refreshToken) {
-          token.refreshToken = refreshToken
+      for (const token of userTokens) {
+        if (token.refreshToken === oldRefreshToken) {
+          token.refreshToken = refreshToken;
           return token.save()
         }
-      })
+      }
     }
 
     const token = await Tokens.create({UserId, refreshToken})
 
     return token
+  }
+
+  async destroyToken(refreshToken) {
+    const token = await Tokens.destroy({where: {refreshToken}})
+
+    return token;
   }
 }
 
