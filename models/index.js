@@ -1,0 +1,21 @@
+export {
+  Users,
+  Statuses,
+  Roles,
+  Reviews,
+  Trainers,
+  Specializations,
+  TrainerSpecializations,
+  TrainerReviews,
+  TrainingPackages,
+  TrainingPackageTypes,
+  UserTrainingPackages,
+  News,
+  NewsDocuments,
+  NewsStatuses,
+  Memberships,
+  MembershipTypes,
+  Promotions,
+  UserMemberships,
+  UserMembershipFreezings
+} from './models.js'
