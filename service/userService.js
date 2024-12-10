@@ -38,8 +38,6 @@ class UserService {
   }
 
   async logout(refreshToken) {
-    // console.log(refreshToken)
-
     const token = await TokenService.destroyToken(refreshToken)
 
     return token
@@ -65,6 +63,12 @@ class UserService {
     await TokenService.saveToken(userDTO.id, tokens.refreshToken, oldRefreshToken)
 
     return {...tokens, user: userDTO}
+  }
+
+  async getUsers() {
+    const users = await Users.findAll()
+
+    return users
   }
 
 }
