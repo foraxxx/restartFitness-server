@@ -4,9 +4,9 @@ import {Tokens} from "../models/models.js"
 class TokenService {
   validateAccessToken(accessToken) {
     try {
-      const token = jwt.verify(accessToken, process.env.ACCESS_SECRET_KEY)
+      const tokenData = jwt.verify(accessToken, process.env.ACCESS_SECRET_KEY)
 
-      return token
+      return tokenData
     } catch(error) {
       return null
     }
@@ -14,9 +14,9 @@ class TokenService {
 
   validateRefreshToken(refreshToken) {
     try {
-      const token = jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY)
+      const tokenData = jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY)
 
-      return token
+      return tokenData
     } catch(error) {
         return null
     }
