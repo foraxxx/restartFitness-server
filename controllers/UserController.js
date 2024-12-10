@@ -3,7 +3,7 @@ import UserService from "../service/userService.js"
 import TokenService from "../service/tokenService.js"
 
 class UserController {
-  async registration(req, res) {
+  async registration(req, res, next) {
     try {
       const {name, surName, number} = req.body
 
@@ -16,11 +16,11 @@ class UserController {
 
       return res.json(userData)
     } catch(error) {
-      return res.status(400).json({message: error.message})
+      next(error)
     }
   }
 
-  async login(req, res) {
+  async login(req, res, next) {
     try {
       const { number } = req.body
       const { refreshToken } = req.cookies
@@ -32,11 +32,11 @@ class UserController {
 
       return res.json(userData)
     } catch(error) {
-      return res.status(400).json({message: error.message})
+      next(error)
     }
   }
 
-  async logout(req, res) {
+  async logout(req, res, next) {
     try {
       const { refreshToken } = req.cookies
 
@@ -45,11 +45,11 @@ class UserController {
 
       return res.json(token)
     } catch(error) {
-      return res.status(400).json({message: error.message})
+      next(error)
     }
   }
 
-  async refresh(req, res) {
+  async refresh(req, res, next) {
     try {
       const { refreshToken } = req.cookies
       const userData = await UserService.refresh(refreshToken)
@@ -57,7 +57,7 @@ class UserController {
 
       return res.json(userData)
     } catch(error) {
-      return res.status(400).json({message: error.message})
+      next(error)
     }
   }
 

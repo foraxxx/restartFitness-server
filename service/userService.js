@@ -2,13 +2,14 @@ import {Roles, Users} from "../models/index.js"
 import TokenService from "./tokenService.js"
 import UserDTO from "../dto/userDTO.js"
 import {Tokens} from "../models/models.js"
+import ApiError from "../exceptions/apiErrors.js"
 
 class UserService {
   async registration(name, surName, number) {
     const candidate = await Users.findOne({where: {number}})
 
     if (candidate) {
-      throw new Error(`Пользователь с таким номером уже существует`)
+      throw ApiError.BadRequest('Пользователь с таким номером уже существует')
     }
 
     const defaultRole = await Roles.findOne({where: {name: 'Пользователь'}})
@@ -25,7 +26,7 @@ class UserService {
     const user = await Users.findOne({where: {number}})
 
     if (!user) {
-      throw new Error(`Пользователя с таким номером не существует`)
+      throw ApiError.NotFound(`Пользователя с таким номером не существует`)
     }
 
     const role = await Roles.findOne({where: {id: user.RoleId}})
@@ -45,14 +46,14 @@ class UserService {
 
   async refresh(oldRefreshToken) {
     if (!oldRefreshToken) {
-      throw new Error ('Пользователь не авторизован')
+      throw ApiError.UnauthorizedError()
     }
 
     const userData = TokenService.validateRefreshToken(oldRefreshToken)
     const token = await TokenService.findToken(oldRefreshToken)
 
     if (!userData || !token) {
-      throw new Error('Пользователь не авторизован')
+      throw ApiError.UnauthorizedError()
     }
 
     const user = await Users.findByPk(userData.id)
