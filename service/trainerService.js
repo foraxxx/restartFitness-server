@@ -28,9 +28,10 @@ class TrainerService {
   }
 
   async delete(id) {
-    const trainer = await Trainers.destroy({where: {UserId: id}})
+    const trainerData = await Trainers.findOne({where: {UserId: id}})
+    await Trainers.destroy({where: {UserId: id}})
 
-    return trainer
+    return trainerData
   }
 }
 

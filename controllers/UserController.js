@@ -110,6 +110,12 @@ class UserController {
         const trainerData = await TrainerService.getOne(id)
 
         if (trainerData) {
+          if (trainerData.photo) {
+            const oldPhotoPath = path.resolve(process.cwd(), 'static/trainers', trainerData.photo)
+            if (fs.existsSync(oldPhotoPath)) {
+              fs.unlinkSync(oldPhotoPath)
+            }
+          }
           const updatedTrainerData = await TrainerService.update(id, {bio, experience, vkLink, photo: filename})
 
           if (updatedTrainerData) {
@@ -128,6 +134,13 @@ class UserController {
       if (userData.roleData.name === 'Тренер' && userData.roleData.id !== roleData.id) {
         const user = await UserService.updateRole(id, roleData.id)
         const deletedTrainerData = await TrainerService.delete(id)
+
+        if (deletedTrainerData.photo) {
+          const oldPhotoPath = path.resolve(process.cwd(), 'static/trainers', deletedTrainerData.photo)
+          if (fs.existsSync(oldPhotoPath)) {
+            fs.unlinkSync(oldPhotoPath)
+          }
+        }
 
         return res.json({userData: user, roleData, message: 'Пользователь успешно изменён'})
       }
