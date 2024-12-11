@@ -1,4 +1,5 @@
 import {Memberships, MembershipTypes, Statuses} from "../models/index.js"
+import ApiError from "../exceptions/apiErrors.js"
 
 class MembershipService {
   async create(membership) {
@@ -19,17 +20,26 @@ class MembershipService {
   }
 
   async getOne(id) {
-    const membershipData = await Memberships.findOne({where: {id}, include: [{model: MembershipTypes}, {model: Statuses}]})
+      const membershipData = await Memberships.findOne({where: {id}, include: [{model: MembershipTypes}, {model: Statuses}]})
 
-    return membershipData
+      if (!membershipData) {
+        throw ApiError.NotFound()
+      }
+
+      return membershipData
   }
 
   async updateOne(id, membership) {}
 
   async deleteOne(id) {
-    const membershipData = await Memberships.destroy({where: {id}})
+    const membership = await Memberships.findByPk(id)
 
-    return membershipData
+    if (!membership) {
+      throw ApiError.NotFound()
+    }
+    await Memberships.destroy({where: {id: membership.id}})
+
+    return membership
   }
 }
 

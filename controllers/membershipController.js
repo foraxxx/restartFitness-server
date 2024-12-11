@@ -2,6 +2,7 @@ import MembershipService from "../service/membershipService.js"
 import { v4 as uuidv4 } from "uuid"
 import path from "path"
 import ApiError from "../exceptions/apiErrors.js"
+import fs from "fs"
 
 class MembershipController {
   async createOne(req, res, next) {
@@ -57,6 +58,17 @@ class MembershipController {
       const {id} = req.params
 
       const membership = await MembershipService.deleteOne(id)
+      // const {photo} = membership.photo
+
+      const photoPath = path.resolve(process.cwd(), 'static/memberships', membership.photo)
+
+      fs.unlink(photoPath, (error) => {
+        if (error) {
+          console.error('Ошибка при удалении файла:', error.message);
+        } else {
+          console.log('Файл успешно удален:', photoPath);
+        }
+      })
 
       return res.json(membership)
     } catch(error) {
