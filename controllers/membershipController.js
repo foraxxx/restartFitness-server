@@ -17,7 +17,7 @@ class MembershipController {
         photo.mv(path.resolve(process.cwd(), 'static/memberships', filename));
       }
 
-      return res.json(membershipData)
+      return res.json({membershipData, message: 'Абонемент успешно создан'})
     } catch(error) {
       next(ApiError.BadRequest(error.message))
     }
@@ -57,24 +57,23 @@ class MembershipController {
     try {
       const {id} = req.params
 
-      const membership = await MembershipService.deleteOne(id)
-      // const {photo} = membership.photo
+      const membershipData = await MembershipService.deleteOne(id)
 
-      const photoPath = path.resolve(process.cwd(), 'static/memberships', membership.photo)
+      const photoPath = path.resolve(process.cwd(), 'static/memberships', membershipData.photo)
 
       fs.unlink(photoPath, (error) => {
         if (error) {
-          console.error('Ошибка при удалении файла:', error.message);
+          console.error('Ошибка при удалении файла:', error.message)
         } else {
-          console.log('Файл успешно удален:', photoPath);
+          console.log('Файл успешно удален:', photoPath)
         }
       })
 
-      return res.json(membership)
+      return res.json({membershipData, message: 'Абонемент успешно удалён'})
     } catch(error) {
       next(error)
     }
   }
 }
 
-export default new MembershipController();
+export default new MembershipController()
