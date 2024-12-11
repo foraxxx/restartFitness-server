@@ -75,12 +75,19 @@ class UserService {
 
   async getOne(id) {
     const userData = await Users.findByPk(id)
+    let trainerData = null
 
     if (!userData) {
       throw ApiError.NotFound('Пользователь не найден')
     }
 
     const roleData = await Roles.findByPk(userData.RoleId)
+
+    if (roleData.name === 'Тренер') {
+      trainerData = await TrainerService.getOne(id)
+
+      return {userData, trainerData, roleData}
+    }
 
     return {userData, roleData}
   }
