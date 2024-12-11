@@ -5,6 +5,7 @@ const router = Router()
 
 router.get('/', membershipController.getAll)
 router.get('/:id', membershipController.getOne)
+router.post('/', membershipController.createOne)
 router.put('/:id', membershipController.updateOne)
 router.delete('/:id', membershipController.deleteOne)
 
