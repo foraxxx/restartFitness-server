@@ -3,6 +3,7 @@ import TokenService from "./tokenService.js"
 import UserDTO from "../dto/userDTO.js"
 import {Tokens} from "../models/models.js"
 import ApiError from "../exceptions/apiErrors.js"
+import TrainerService from "./trainerService.js"
 
 class UserService {
   async registration(name, surName, number) {
@@ -72,6 +73,25 @@ class UserService {
     return users
   }
 
+  async getOne(id) {
+    const userData = await Users.findByPk(id)
+
+    if (!userData) {
+      throw ApiError.NotFound('Пользователь не найден')
+    }
+
+    const roleData = await Roles.findByPk(userData.RoleId)
+
+    return {userData, roleData}
+  }
+
+  async updateRole(idUser, idRole) {
+    const user = await Users.findByPk(idUser)
+    user.RoleId = idRole
+    await user.save()
+
+    return user
+  }
 }
 
 export default new UserService()

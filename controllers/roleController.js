@@ -1,55 +1,43 @@
 import { Roles } from "../models/index.js"
+import RoleService from "../service/roleService.js"
 
 class RoleController {
-  async create (req, res) {
+  async create (req, res, next) {
     try {
-      const { name } = req.body
+      let { name } = req.body
+      name = (name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()).trim()
 
       if (!name) {
         return res.status(400).send({message: 'Укажите название роли'})
       }
 
-      const editName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
+      const role = await RoleService.create(name)
 
-      const role = await Roles.findOne({where: {name: editName}})
-
-      if (role) {
-        return res.status(400).json({message: `Роль ${editName} уже существует`})
-      }
-
-      const newRole = await Roles.create({name: editName})
-
-      return res.json({newRole, message: `Роль ${editName} успешно создана`})
+      return res.json({role, message: `Роль ${role.name} успешно создана`})
     } catch(error) {
-      console.log(error)
-      return res.json({error})
+      return next(error)
     }
   }
 
-  async getAllRoles (req, res) {
+  async getAll (req, res, next) {
     try {
-      const roles = await Roles.findAll()
+      const roles = await RoleService.getAll()
 
       return res.json(roles)
     } catch(error) {
-      return res.status(500).json({message: 'Ошибка при получении списка ролей'})
+      return next(error)
     }
   }
 
-  async delete (req, res) {
+  async delete (req, res, next) {
     try {
       const { id } = req.params
 
-      const role = await Roles.findOne({where: {id}})
-      const deletedRole = await Roles.destroy({where: {id}})
+      const role = await RoleService.delete(id)
 
-      if (deletedRole) {
-        return res.json({role, message: `Роль ${role.name} успешно удалена`})
-      } else {
-        return res.status(500).json({message: 'Ошибка при удалении роли'})
-      }
+      return res.json({role, message: `Роль ${role.name} успешно удалена`})
     } catch(error) {
-        return res.status(500).json({message: 'Ошибка при удалении роли'})
+        return next(error)
     }
   }
 }

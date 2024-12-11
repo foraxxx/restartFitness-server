@@ -1,4 +1,5 @@
 import Router from 'express'
+import TrainerController from "../controllers/trainerController.js"
 
 const router = Router()
 
