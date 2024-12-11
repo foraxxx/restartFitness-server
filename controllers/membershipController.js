@@ -6,11 +6,11 @@ import ApiError from "../exceptions/apiErrors.js"
 class MembershipController {
   async create(req, res, next) {
     try {
-      const {name, description, durationDays, isFreezing, freezingDays = 0, price} = req.body
+      const {name, description, durationDays, isFreezing, freezingDays = 0, price, StatusId, MembershipTypeId} = req.body
       const {photo} = req.files
       let filename = uuid.v4() + ".jpg"
 
-      const membershipData = await MembershipService.create({name, description, durationDays, photo: filename, isFreezing, freezingDays, price})
+      const membershipData = await MembershipService.create({name, description, durationDays, photo: filename, isFreezing, freezingDays, price, StatusId, MembershipTypeId})
 
       if (membershipData) {
         photo.mv(path.resolve(__dirname, '..', 'static/memberships', filename))
@@ -32,7 +32,7 @@ class MembershipController {
     try {
       const {id} = req.params
 
-      const membership = await MembershipService.findOne(id)
+      const membership = await MembershipService.getOne(id)
 
       return res.json(membership)
     } catch(error) {
@@ -42,11 +42,11 @@ class MembershipController {
 
   async updateOne(req, res, next) {
     try {
-      const {id} = req.params
-
-      const membership = await MembershipService.deleteOne(id)
-
-      return res.json(membership)
+      // const {id} = req.params
+      //
+      // const membership = await MembershipService.updateOne(id)
+      //
+      // return res.json(membership)
     } catch(error) {
       next(error)
     }
@@ -56,7 +56,7 @@ class MembershipController {
     try {
       const {id} = req.params
 
-      const membership = await MembershipService.findOne(id)
+      const membership = await MembershipService.deleteOne(id)
 
       return res.json(membership)
     } catch(error) {
