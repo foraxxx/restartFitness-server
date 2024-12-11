@@ -1,20 +1,25 @@
-import {Memberships} from "../models/index.js"
+import {Memberships, MembershipTypes, Statuses} from "../models/index.js"
 
 class MembershipService {
   async create(membership) {
-    const membershipData = await Memberships.create(membership)
+    const membershipData = await Memberships.create(membership, {include: [{model: MembershipTypes}, {model: Statuses}]})
 
-    return membershipData
+    const fullMembershipData = await Memberships.findOne({
+      where: { id: membershipData.id },
+      include: [{ model: MembershipTypes}, { model: Statuses}]
+    });
+
+    return fullMembershipData
   }
 
   async getAll() {
-    const membershipsData = await Memberships.findAll()
+    const membershipsData = await Memberships.findAll({include: [{model: MembershipTypes}, {model: Statuses}]})
 
     return membershipsData
   }
 
   async getOne(id) {
-    const membershipData = await Memberships.findByPk(id)
+    const membershipData = await Memberships.findOne({where: {id}, include: [{model: MembershipTypes}, {model: Statuses}]})
 
     return membershipData
   }
@@ -22,7 +27,7 @@ class MembershipService {
   async updateOne(id, membership) {}
 
   async deleteOne(id) {
-    const membershipData = await Memberships.destroy(id)
+    const membershipData = await Memberships.destroy({where: {id}})
 
     return membershipData
   }

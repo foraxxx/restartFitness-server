@@ -7,6 +7,6 @@ const router = new Router()
 
 router.use('/user', userRouter)
 router.use('/role', roleRouter)
-router.use('/memberships', roleRouter)
+router.use('/memberships', membershipRouter)
 
 export default router

@@ -1,19 +1,19 @@
 import MembershipService from "../service/membershipService.js"
-import uuid from "uuid"
+import { v4 as uuidv4 } from "uuid"
 import path from "path"
 import ApiError from "../exceptions/apiErrors.js"
 
 class MembershipController {
-  async create(req, res, next) {
+  async createOne(req, res, next) {
     try {
       const {name, description, durationDays, isFreezing, freezingDays = 0, price, StatusId, MembershipTypeId} = req.body
       const {photo} = req.files
-      let filename = uuid.v4() + ".jpg"
+      let filename = uuidv4() + ".jpg"
 
       const membershipData = await MembershipService.create({name, description, durationDays, photo: filename, isFreezing, freezingDays, price, StatusId, MembershipTypeId})
 
       if (membershipData) {
-        photo.mv(path.resolve(__dirname, '..', 'static/memberships', filename))
+        photo.mv(path.resolve(process.cwd(), 'static/memberships', filename));
       }
 
       return res.json(membershipData)

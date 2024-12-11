@@ -36,7 +36,7 @@ const app = express()
 app.use(cors())
 app.use(cookieParser())
 app.use(express.json())
-app.use(express.static(path.resolve(__dirname, "static")))
+app.use(express.static(path.resolve(process.cwd(), 'static')));
 app.use(fileUpload({}))
 app.use('/api', router)
 app.use(errorsMiddleware)
