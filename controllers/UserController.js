@@ -8,6 +8,7 @@ import TrainerService from "../service/trainerService.js"
 import { v4 as uuidv4 } from "uuid"
 import path from "path"
 import fs from "fs"
+import TrainerController from "./trainerController.js"
 
 class UserController {
   async registration(req, res, next) {
@@ -89,49 +90,29 @@ class UserController {
   async changeRole(req, res, next) {
     try {
       const {id} = req.params
-      const {roleId, bio, experience, vkLink} = req.body
-      const {photo} = req.files || {}
+      const {roleId} = req.body
 
       const userData = await UserService.getOne(id)
 
       if (!userData) {
-        return ApiError.NotFound('Пользователь не найден')
+        return next(ApiError.NotFound('Пользователь не найден'))
       }
 
       const roleData = await Roles.findByPk(roleId)
 
       if (roleData.name === 'Тренер') {
-        if (!bio || !experience || !vkLink || !photo) {
-          return next(ApiError.BadRequest('Не все поля заполнены'))
+        const trainerData = await TrainerController.createOne(req, res, next)
+
+        if (!trainerData) {
+          return
         }
 
-        let filename = uuidv4() + ".jpg"
+        const userData = await UserService.updateRole(id, roleData.id)
 
-        const trainerData = await TrainerService.getOne(id)
-
-        if (trainerData) {
-          if (trainerData.photo) {
-            const oldPhotoPath = path.resolve(process.cwd(), 'static/trainers', trainerData.photo)
-            if (fs.existsSync(oldPhotoPath)) {
-              fs.unlinkSync(oldPhotoPath)
-            }
-          }
-          const updatedTrainerData = await TrainerService.update(id, {bio, experience, vkLink, photo: filename})
-
-          if (updatedTrainerData) {
-            photo.mv(path.resolve(process.cwd(), 'static/trainers', filename));
-          }
-
-          return res.json({userData: userData.userData, trainerData: updatedTrainerData, roleData, message: 'Пользователь успешно изменён1'})
-        } else {
-          const userData = await UserService.updateRole(id, roleData.id)
-          const trainerData = await TrainerService.create(id, {bio, experience, vkLink, photo: filename})
-
-          return res.json({userData: userData, trainerData, roleData, message: 'Пользователь успешно изменён2'})
-        }
+        return res.json({userData: userData, trainerData: trainerData, roleData, message: 'Пользователь успешно изменён'})
       }
 
-      if (userData.roleData.name === 'Тренер' && userData.roleData.id !== roleData.id) {
+      if (userData.roleData.name === 'Тренер' && roleData.name !== 'Тренер') {
         const user = await UserService.updateRole(id, roleData.id)
         const deletedTrainerData = await TrainerService.delete(id)
 

@@ -97,6 +97,7 @@ class UserService {
     user.RoleId = idRole
     await user.save()
 
+    console.log(`updated: ${user}`)
     return user
   }
 }

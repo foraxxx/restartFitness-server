@@ -1,4 +1,5 @@
 import {Trainers} from "../models/index.js"
+import ApiError from "../exceptions/apiErrors.js"
 
 class TrainerService {
   async getOne(id) {
@@ -7,9 +8,9 @@ class TrainerService {
     return TrainerData
   }
 
-  async update(userId, trainerData) {
-    const {bio, experience, vkLink, photo} = trainerData
-    const trainer = await Trainers.findOne({where: {UserId: userId}})
+  async update(trainerData) {
+    const {id, bio, experience, vkLink, photo} = trainerData
+    const trainer = await Trainers.findOne({where: {UserId: id}})
     trainer.bio = bio
     trainer.experience = experience
     trainer.vkLink = vkLink
