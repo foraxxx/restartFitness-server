@@ -7,14 +7,14 @@ import fs from "fs"
 class MembershipController {
   async createOne(req, res, next) {
     try {
-      const {name, description, durationDays, isFreezing, freezingDays = 0, price, StatusId, MembershipTypeId} = req.body
+      const {name, description, durationDays, isFreezing = false, freezingDays = 0, price, StatusId, MembershipTypeId} = req.body
       const {photo} = req.files
       let filename = uuidv4() + ".jpg"
 
       const membershipData = await MembershipService.create({name, description, durationDays, photo: filename, isFreezing, freezingDays, price, StatusId, MembershipTypeId})
 
       if (membershipData) {
-        photo.mv(path.resolve(process.cwd(), 'static/memberships', filename));
+        await photo.mv(path.resolve(process.cwd(), 'static/memberships', filename));
       }
 
       return res.json({membershipData, message: 'Абонемент успешно создан'})
@@ -43,11 +43,37 @@ class MembershipController {
 
   async updateOne(req, res, next) {
     try {
-      // const {id} = req.params
-      //
-      // const membership = await MembershipService.updateOne(id)
-      //
-      // return res.json(membership)
+      const {id} = req.params
+      const {name, description, durationDays, isFreezing = false, freezingDays = 0, price, statusId, membershipTypeId} = req.body
+      const {photo} = req.files || {}
+      let filename = uuidv4() + ".jpg"
+
+      const membershipData = await MembershipService.updateOne(
+        {
+          id,
+          name,
+          description,
+          durationDays,
+          isFreezing,
+          freezingDays,
+          price,
+          statusId,
+          membershipTypeId,
+          photo:filename
+        })
+
+      if (membershipData) {
+        if (photo) {
+          const oldPhotoPath = path.resolve(process.cwd(), 'static/memberships', membershipData.membershipData.photo)
+          if (fs.existsSync(oldPhotoPath)) {
+            fs.unlinkSync(oldPhotoPath)
+          }
+        }
+
+        await photo.mv(path.resolve(process.cwd(), 'static/trainers', filename))
+      }
+
+      return res.json({membershipData, message: 'Абонемент успешно обновлён'})
     } catch(error) {
       next(error)
     }
@@ -61,13 +87,9 @@ class MembershipController {
 
       const photoPath = path.resolve(process.cwd(), 'static/memberships', membershipData.photo)
 
-      fs.unlink(photoPath, (error) => {
-        if (error) {
-          console.error('Ошибка при удалении файла:', error.message)
-        } else {
-          console.log('Файл успешно удален:', photoPath)
-        }
-      })
+      if (fs.existsSync(photoPath)) {
+        fs.unlinkSync(photoPath)
+      }
 
       return res.json({membershipData, message: 'Абонемент успешно удалён'})
     } catch(error) {

@@ -1,4 +1,4 @@
-import {Roles, Users} from "../models/index.js"
+import {MembershipTypes, Roles, Statuses, Trainers, Users} from "../models/index.js"
 import TokenService from "./tokenService.js"
 import UserDTO from "../dto/userDTO.js"
 import {Tokens} from "../models/models.js"
@@ -74,6 +74,7 @@ class UserService {
   }
 
   async getOne(id) {
+    // const userData = await Users.findByPk(id, {include: [{model: Trainers}, {model: Roles}]})
     const userData = await Users.findByPk(id)
     let trainerData = null
 
@@ -90,6 +91,8 @@ class UserService {
     }
 
     return {userData, roleData}
+
+    // return userData
   }
 
   async updateRole(idUser, idRole) {

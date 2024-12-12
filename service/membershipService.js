@@ -29,7 +29,27 @@ class MembershipService {
       return membershipData
   }
 
-  async updateOne(id, membership) {}
+  async updateOne(membershipData) {
+    const {id, name, description, durationDays, isFreezing, freezingDays, price, statusId, membershipTypeId, photo} = membershipData
+
+    const membership = await Memberships.findByPk(id)
+    membership.name = name
+    membership.description = description
+    membership.durationDays = durationDays
+    membership.isFreezing = isFreezing
+    membership.freezingDays = freezingDays
+    membership.price = price
+    membership.StatusId = statusId
+    membership.MembershipTypeId = membershipTypeId
+    membership.photo = photo
+    await membership.save()
+
+    const status = await Statuses.findByPk(statusId)
+    const membershipType = MembershipTypes.findByPk(membershipTypeId)
+
+    return {membershipData: membership, MembershipType: membershipType, Status: status }
+
+  }
 
   async deleteOne(id) {
     const membership = await Memberships.findByPk(id)
