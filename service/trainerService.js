@@ -3,9 +3,9 @@ import ApiError from "../exceptions/apiErrors.js"
 
 class TrainerService {
   async getOne(id) {
-    const TrainerData = await Trainers.findOne({where: {UserId: id}})
+    const trainerData = await Trainers.findOne({where: {UserId: id}})
 
-    return TrainerData
+    return trainerData
   }
 
   async update(trainerData) {

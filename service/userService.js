@@ -68,31 +68,19 @@ class UserService {
   }
 
   async getUsers() {
-    const users = await Users.findAll()
+    const users = await Users.findAll({include: [{model: Trainers}, {model: Roles}]})
 
     return users
   }
 
   async getOne(id) {
-    // const userData = await Users.findByPk(id, {include: [{model: Trainers}, {model: Roles}]})
-    const userData = await Users.findByPk(id)
-    let trainerData = null
+    const userData = await Users.findByPk(id, {include: [{model: Trainers}, {model: Roles}]})
 
     if (!userData) {
       throw ApiError.NotFound('Пользователь не найден')
     }
 
-    const roleData = await Roles.findByPk(userData.RoleId)
-
-    if (roleData.name === 'Тренер') {
-      trainerData = await TrainerService.getOne(id)
-
-      return {userData, trainerData, roleData}
-    }
-
-    return {userData, roleData}
-
-    // return userData
+    return userData
   }
 
   async updateRole(idUser, idRole) {
@@ -100,8 +88,9 @@ class UserService {
     user.RoleId = idRole
     await user.save()
 
-    console.log(`updated: ${user}`)
-    return user
+    const userData = await Users.findByPk(idUser, {include: [{model: Trainers}, {model: Roles}]})
+
+    return userData
   }
 }
 

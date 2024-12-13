@@ -1,11 +1,7 @@
-import {Model as Trainer, Model as User} from "sequelize"
 import UserService from "../service/userService.js"
-import TokenService from "../service/tokenService.js"
 import {Roles} from "../models/index.js"
-import e from "express"
 import ApiError from "../exceptions/apiErrors.js"
 import TrainerService from "../service/trainerService.js"
-import { v4 as uuidv4 } from "uuid"
 import path from "path"
 import fs from "fs"
 import TrainerController from "./trainerController.js"
@@ -32,8 +28,6 @@ class UserController {
     try {
       const { number } = req.body
       const { refreshToken } = req.cookies
-
-      // console.log(refreshToken)
 
       const userData = await UserService.login(number, refreshToken)
       res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
@@ -92,9 +86,9 @@ class UserController {
       const {id} = req.params
       const {roleId} = req.body
 
-      const userData = await UserService.getOne(id)
+      const userInfo = await UserService.getOne(id)
 
-      if (!userData) {
+      if (!userInfo) {
         return next(ApiError.NotFound('Пользователь не найден'))
       }
 
@@ -109,12 +103,12 @@ class UserController {
 
         const userData = await UserService.updateRole(id, roleData.id)
 
-        return res.json({userData: userData, trainerData: trainerData, roleData, message: 'Пользователь успешно изменён'})
+        return res.json({...userData.toJSON(), message: 'Пользователь успешно изменён'})
       }
 
-      if (userData.roleData.name === 'Тренер' && roleData.name !== 'Тренер') {
-        const user = await UserService.updateRole(id, roleData.id)
+      if (userInfo.Role.name === 'Тренер' && roleData.name !== 'Тренер') {
         const deletedTrainerData = await TrainerService.delete(id)
+        const user = await UserService.updateRole(id, roleData.id)
 
         if (deletedTrainerData.photo) {
           const oldPhotoPath = path.resolve(process.cwd(), 'static/trainers', deletedTrainerData.photo)
@@ -123,14 +117,12 @@ class UserController {
           }
         }
 
-        return res.json({userData: user, roleData, message: 'Пользователь успешно изменён'})
+        return res.json({...user.toJSON(), message: 'Пользователь успешно изменён'})
       }
 
-      const user = await UserService.updateRole(id, roleData.id)
+      const userData = await UserService.updateRole(id, roleData.id)
 
-      return res.json({userData: user, roleData, message: 'Пользователь успешно изменён'})
-
-
+      return res.json({...userData.toJSON(), message: 'Пользователь успешно изменён'})
     } catch(error) {
       next(error)
     }
