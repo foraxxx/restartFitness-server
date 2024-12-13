@@ -7,6 +7,12 @@ class UserMembershipsService {
 
     return userMembershipData
   }
+
+  async getAllUserMemberships(userId) {
+    const userMembershipsData = await UserMemberships.findAll({where: {UserId: userId}, include: {model: Statuses}})
+
+    return userMembershipsData
+  }
 }
 
 export default new UserMembershipsService()

@@ -2,6 +2,7 @@ import MembershipService from "../service/membershipService.js"
 import ApiError from "../exceptions/apiErrors.js"
 import UserMembershipsService from "../service/userMembershipsService.js"
 import {Statuses} from "../models/index.js"
+import userMembershipsService from "../service/userMembershipsService.js"
 
 class UserMembershipsController {
   async create(req, res, next) {
@@ -50,9 +51,12 @@ class UserMembershipsController {
     }
   }
 
-  async getAll(req, res, next) {
+  async getAllUserMemberships(req, res, next) {
     try {
+      const {user} = req
 
+      const userMembershipsData = await userMembershipsService.getAllUserMemberships(user.id)
+      return res.json(userMembershipsData)
     } catch(error) {
       next(error)
     }
