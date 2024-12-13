@@ -10,12 +10,10 @@ class TrainerService {
   }
 
   async update(trainerData) {
-    const {id, bio, experience, vkLink, photo} = trainerData
+    const {id} = trainerData
     const trainer = await Trainers.findOne({where: {UserId: id}})
-    trainer.bio = bio
-    trainer.experience = experience
-    trainer.vkLink = vkLink
-    trainer.photo = photo
+
+    Object.assign(trainer, trainerData)
     await trainer.save()
 
     return trainer
