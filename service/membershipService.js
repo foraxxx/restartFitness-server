@@ -33,21 +33,12 @@ class MembershipService {
     const {id, name, description, durationDays, isFreezing, freezingDays, price, statusId, membershipTypeId, photo} = membershipData
 
     const membership = await Memberships.findByPk(id)
-    membership.name = name
-    membership.description = description
-    membership.durationDays = durationDays
-    membership.isFreezing = isFreezing
-    membership.freezingDays = freezingDays
-    membership.price = price
-    membership.StatusId = statusId
-    membership.MembershipTypeId = membershipTypeId
-    membership.photo = photo
+    Object.assign(membership, membershipData)
     await membership.save()
 
-    const status = await Statuses.findByPk(statusId)
-    const membershipType = MembershipTypes.findByPk(membershipTypeId)
+    const updatedMembership = await Memberships.findByPk(id, {include: [{model: MembershipTypes}, {model: Statuses}]})
 
-    return {membershipData: membership, MembershipType: membershipType, Status: status }
+    return updatedMembership
 
   }
 

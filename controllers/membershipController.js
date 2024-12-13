@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid"
 import path from "path"
 import ApiError from "../exceptions/apiErrors.js"
 import fs from "fs"
+import {Memberships} from "../models/index.js"
 
 class MembershipController {
   async createOne(req, res, next) {
@@ -17,7 +18,7 @@ class MembershipController {
         await photo.mv(path.resolve(process.cwd(), 'static/memberships', filename));
       }
 
-      return res.json({membershipData, message: 'Абонемент успешно создан'})
+      return res.json({...membershipData.toJSON(), message: 'Абонемент успешно создан'})
     } catch(error) {
       next(ApiError.BadRequest(error.message))
     }
@@ -48,7 +49,8 @@ class MembershipController {
       const {photo} = req.files || {}
       let filename = uuidv4() + ".jpg"
 
-      const membershipData = await MembershipService.updateOne(
+      const oldMembershipData = await Memberships.findByPk(id)
+      const updatedMembershipData = await MembershipService.updateOne(
         {
           id,
           name,
@@ -62,18 +64,18 @@ class MembershipController {
           photo:filename
         })
 
-      if (membershipData) {
+      if (updatedMembershipData) {
         if (photo) {
-          const oldPhotoPath = path.resolve(process.cwd(), 'static/memberships', membershipData.membershipData.photo)
+          const oldPhotoPath = path.resolve(process.cwd(), 'static/memberships', oldMembershipData.photo)
           if (fs.existsSync(oldPhotoPath)) {
             fs.unlinkSync(oldPhotoPath)
           }
         }
 
-        await photo.mv(path.resolve(process.cwd(), 'static/trainers', filename))
+        await photo.mv(path.resolve(process.cwd(), 'static/memberships', filename))
       }
 
-      return res.json({membershipData, message: 'Абонемент успешно обновлён'})
+      return res.json({...updatedMembershipData.toJSON(), message: 'Абонемент успешно обновлён'})
     } catch(error) {
       next(error)
     }

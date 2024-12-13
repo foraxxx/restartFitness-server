@@ -4,6 +4,7 @@ import ApiError from "../exceptions/apiErrors.js"
 class TrainerService {
   async getOne(id) {
     const trainerData = await Trainers.findOne({where: {UserId: id}})
+    console.log(trainerData)
 
     return trainerData
   }
