@@ -1,19 +1,21 @@
 import { Roles } from "../models/index.js"
 import RoleService from "../service/roleService.js"
+import ApiError from "../exceptions/apiErrors.js"
 
 class RoleController {
   async create (req, res, next) {
     try {
       let { name } = req.body
-      name = (name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()).trim()
 
       if (!name) {
-        return res.status(400).send({message: 'Укажите название роли'})
+        return next(ApiError.BadRequest('Укажите название роли'))
       }
 
-      const role = await RoleService.create(name)
+      name = (name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()).trim()
 
-      return res.json({role, message: `Роль ${role.name} успешно создана`})
+      const roleData = await RoleService.create(name)
+
+      return res.json({...roleData.toJSON(), message: `Роль ${roleData.name} успешно создана`})
     } catch(error) {
       return next(error)
     }
@@ -33,9 +35,15 @@ class RoleController {
     try {
       const { id } = req.params
 
-      const role = await RoleService.delete(id)
+      const role = await Roles.findByPk(id)
 
-      return res.json({role, message: `Роль ${role.name} успешно удалена`})
+      if (!role) {
+        return next(ApiError.BadRequest(`Роли не существует`))
+      }
+
+      const roleData = await RoleService.delete(id)
+
+      return res.json({...roleData.toJSON(), message: `Роль ${roleData.name} успешно удалена`})
     } catch(error) {
         return next(error)
     }
