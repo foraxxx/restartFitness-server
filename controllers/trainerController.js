@@ -62,11 +62,25 @@ class TrainerController {
   }
 
   async getOne(req, res, next) {
+    try {
+      const {id} = req.params
 
+      const trainerData = await TrainerService.getOne(id)
+
+      if (!trainerData) {
+        return next(ApiError.NotFound())
+      }
+
+      res.json(trainerData)
+    } catch(error) {
+      next(error)
+    }
   }
 
   async getAll(req, res, next) {
+    const trainersData = await TrainerService.getAll()
 
+    res.json(trainersData)
   }
 }
 

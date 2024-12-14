@@ -1,12 +1,17 @@
-import {Trainers} from "../models/index.js"
+import {Roles, Trainers, Users} from "../models/index.js"
 import ApiError from "../exceptions/apiErrors.js"
 
 class TrainerService {
   async getOne(id) {
-    const trainerData = await Trainers.findOne({where: {UserId: id}})
-    console.log(trainerData)
+    const trainerData = await Trainers.findByPk(id, {include: {model: Users}})
 
     return trainerData
+  }
+
+  async getAll () {
+    const trainersData = await Trainers.findAll({include: {model: Users}})
+
+    return trainersData
   }
 
   async update(trainerData) {
