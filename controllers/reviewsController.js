@@ -1,5 +1,6 @@
 import ApiError from "../exceptions/apiErrors.js"
-import {Model as ReviewService} from "sequelize"
+import ReviewsService from "../service/reviewsService.js"
+
 
 class ReviewsController {
   async create(req, res, next) {
@@ -12,15 +13,15 @@ class ReviewsController {
       return next(ApiError.BadRequest('Не все поля заполнены'))
     }
 
-    const reviewData = async ReviewService.create({UserId: user.id, description, rating, isAnonymous, date})
+    const reviewData = await ReviewsService.create({UserId: user.id, description, rating, isAnonymous, date})
 
-    return res.json(reviewData.toJSON())
+    return res.json({...reviewData.toJSON(), message: 'Отзыв успешно создан'})
   }
 
   async getAll(req, res, next) {
-    const reviewsData = async ReviewService.getAll()
+    const reviewsData = await ReviewsService.getAll()
 
-    return res.json(reviewsData.toJSON())
+    return res.json(reviewsData)
   }
 }
 
