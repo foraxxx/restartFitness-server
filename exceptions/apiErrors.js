@@ -19,4 +19,8 @@ export default class ApiError extends Error {
   static NotFound(message = 'Ресурс не найден') {
     return new ApiError(404, message)
   }
+
+  static Forbidden() {
+    return new ApiError(403, 'Нет доступа')
+  }
 }
