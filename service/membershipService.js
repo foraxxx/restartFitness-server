@@ -19,6 +19,20 @@ class MembershipService {
     return membershipsData
   }
 
+  async getAllActive() {
+    const membershipsData = await Memberships.findAll({
+      include: [
+        { model: MembershipTypes },
+        {
+          model: Statuses,
+          where: { name: 'Активный' },
+        },
+      ],
+    })
+
+    return membershipsData
+  }
+
   async getOne(id) {
       const membershipData = await Memberships.findOne({where: {id}, include: [{model: MembershipTypes}, {model: Statuses}]})
 

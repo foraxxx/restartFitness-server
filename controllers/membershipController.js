@@ -30,6 +30,12 @@ class MembershipController {
     return res.json(membershipsData)
   }
 
+  async getAllActive(req, res, next) {
+    const membershipsData = await MembershipService.getAllActive()
+
+    return res.json(membershipsData)
+  }
+
   async getOne(req, res, next) {
     try {
       const {id} = req.params

@@ -10,7 +10,6 @@ class UserController {
   async registration(req, res, next) {
     try {
       const {name, surName, number} = req.body
-
       const newName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
       const newSurName = surName.charAt(0).toUpperCase() + surName.slice(1).toLowerCase()
 
