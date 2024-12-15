@@ -21,7 +21,7 @@ export default function (req, res, next) {
       return next(ApiError.UnauthorizedError())
     }
 
-    if (userData.role !== 'Тренер') {
+    if (userData.role !== 'Администратор') {
       return next(ApiError.Forbidden())
     }
 

@@ -24,7 +24,7 @@ class UserMembershipsController {
       now.setDate(now.getDate() + durationDays)
       const dateEnd = now.toISOString().split('T')[0]
 
-      const userMemberhipData = await UserMembershipsService.create(
+      const userMembershipData = await UserMembershipsService.create(
         {
           MembershipId,
           UserId: user.id,
@@ -32,11 +32,12 @@ class UserMembershipsController {
           dateStart, dateEnd,
           dateOrder: dateStart,
           freezingDays,
-          name: membershipData.name
+          name: name
         })
 
 
-      return res.json(userMemberhipData)
+      // return res.json({...userMembershipData.toJSON(), message: 'Абонемент успешно оформлен!'})
+      return res.json(userMembershipData)
 
     } catch(error) {
       next(error)
