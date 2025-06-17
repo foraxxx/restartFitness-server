@@ -9,14 +9,14 @@ class MembershipController {
   async createOne(req, res, next) {
     try {
       const {name, description, durationDays, isFreezing = false, freezingDays = 0, price, StatusId, MembershipTypeId} = req.body
-      const {photo} = req.files
-      let filename = uuidv4() + ".jpg"
+      // const {photo} = req.files
+      // let filename = uuidv4() + ".jpg"
 
-      const membershipData = await MembershipService.create({name, description, durationDays, photo: filename, isFreezing, freezingDays, price, StatusId, MembershipTypeId})
+      const membershipData = await MembershipService.create({name, description, durationDays, isFreezing, freezingDays, price, StatusId, MembershipTypeId})
 
-      if (membershipData) {
-        await photo.mv(path.resolve(process.cwd(), 'static/memberships', filename));
-      }
+      // if (membershipData) {
+      //   await photo.mv(path.resolve(process.cwd(), 'static/memberships', filename));
+      // }
 
       return res.json({...membershipData.toJSON(), message: 'Абонемент успешно создан'})
     } catch(error) {
@@ -52,8 +52,8 @@ class MembershipController {
     try {
       const {id} = req.params
       const {name, description, durationDays, isFreezing = false, freezingDays = 0, price, statusId, membershipTypeId} = req.body
-      const {photo} = req.files || {}
-      let filename = uuidv4() + ".jpg"
+      // const {photo} = req.files || {}
+      // let filename = uuidv4() + ".jpg"
 
       const oldMembershipData = await Memberships.findByPk(id)
       const updatedMembershipData = await MembershipService.updateOne(
@@ -67,19 +67,19 @@ class MembershipController {
           price,
           statusId,
           membershipTypeId,
-          photo:filename
+          // photo:filename
         })
 
-      if (updatedMembershipData) {
-        if (photo) {
-          const oldPhotoPath = path.resolve(process.cwd(), 'static/memberships', oldMembershipData.photo)
-          if (fs.existsSync(oldPhotoPath)) {
-            fs.unlinkSync(oldPhotoPath)
-          }
-        }
-
-        await photo.mv(path.resolve(process.cwd(), 'static/memberships', filename))
-      }
+      // if (updatedMembershipData) {
+      //   if (photo) {
+      //     const oldPhotoPath = path.resolve(process.cwd(), 'static/memberships', oldMembershipData.photo)
+      //     if (fs.existsSync(oldPhotoPath)) {
+      //       fs.unlinkSync(oldPhotoPath)
+      //     }
+      //   }
+      //
+      //   await photo.mv(path.resolve(process.cwd(), 'static/memberships', filename))
+      // }
 
       return res.json({...updatedMembershipData.toJSON(), message: 'Абонемент успешно обновлён'})
     } catch(error) {
@@ -93,11 +93,11 @@ class MembershipController {
 
       const membershipData = await MembershipService.deleteOne(id)
 
-      const photoPath = path.resolve(process.cwd(), 'static/memberships', membershipData.photo)
+      // const photoPath = path.resolve(process.cwd(), 'static/memberships', membershipData.photo)
 
-      if (fs.existsSync(photoPath)) {
-        fs.unlinkSync(photoPath)
-      }
+      // if (fs.existsSync(photoPath)) {
+      //   fs.unlinkSync(photoPath)
+      // }
 
       return res.json({membershipData, message: 'Абонемент успешно удалён'})
     } catch(error) {

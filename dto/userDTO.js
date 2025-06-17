@@ -7,6 +7,8 @@ class UserDTO {
     this.id = data.id
     this.number = data.number
     this.role = data.role
+    this.name = data.name
+    this.surName = data.surName
   }
 }
 

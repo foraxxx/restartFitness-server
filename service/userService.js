@@ -1,9 +1,18 @@
-import {MembershipTypes, Roles, Statuses, Trainers, Users} from "../models/index.js"
+import {
+  MembershipTypes,
+  Roles,
+  Statuses,
+  Trainers,
+  UserMembershipFreezings,
+  UserMemberships,
+  Users
+} from "../models/index.js"
 import TokenService from "./tokenService.js"
 import UserDTO from "../dto/userDTO.js"
 import {Tokens} from "../models/models.js"
 import ApiError from "../exceptions/apiErrors.js"
 import TrainerService from "./trainerService.js"
+import jwt from 'jsonwebtoken'
 
 class UserService {
   async registration(name, surName, number) {
@@ -15,7 +24,7 @@ class UserService {
 
     const defaultRole = await Roles.findOne({where: {name: 'Пользователь'}})
     const user = await Users.create({name, surName, number, RoleId: defaultRole.id})
-    const userDTO = new UserDTO({id: user.id, number: user.number, role: defaultRole.name})
+    const userDTO = new UserDTO({id: user.id, number: user.number, role: defaultRole.name, name: name, surName: surName})
 
     const tokens = TokenService.generateTokens({...userDTO})
     await TokenService.saveToken(userDTO.id, tokens.refreshToken)
@@ -25,13 +34,12 @@ class UserService {
 
   async login(number, oldRefreshToken) {
     const user = await Users.findOne({where: {number}})
-
     if (!user) {
       throw ApiError.NotFound(`Пользователя с таким номером не существует`)
     }
 
     const role = await Roles.findOne({where: {id: user.RoleId}})
-    const userDTO = new UserDTO({id: user.id, number: user.number, role: role.name})
+    const userDTO = new UserDTO({id: user.id, number: user.number, role: role.name, name: user.name, surName: user.surName})
 
     const tokens = TokenService.generateTokens({...userDTO})
     await TokenService.saveToken(userDTO.id, tokens.refreshToken, oldRefreshToken)
@@ -59,28 +67,43 @@ class UserService {
 
     const user = await Users.findByPk(userData.id)
     const role = await Roles.findByPk(user.RoleId)
-    const userDTO = new UserDTO({id: user.id, number: user.number, role: role.name})
+    const userDTO = new UserDTO({id: user.id, number: user.number, role: role.name, name: user.name, surName: user.surName})
 
-    const tokens = TokenService.generateTokens({...userDTO})
-    await TokenService.saveToken(userDTO.id, tokens.refreshToken, oldRefreshToken)
+    const accessToken = jwt.sign({...userDTO}, process.env.ACCESS_SECRET_KEY, {expiresIn: '1m'})
 
-    return {...tokens, user: userDTO}
+    return {
+      accessToken,
+      refreshToken: oldRefreshToken,
+      user: userDTO
+    }
   }
 
-  async getUsers() {
-    const users = await Users.findAll({include: [{model: Trainers}, {model: Roles}]})
-
-    return users
-  }
 
   async getOne(id) {
-    const userData = await Users.findByPk(id, {include: [{model: Trainers}, {model: Roles}]})
+    const userData = await Users.findByPk(id,
+      {
+        include: [
+          {model: Trainers},
+          {model: Roles},
+          {model: UserMemberships,
+            include: [
+          { model: Statuses },
+          { model: UserMembershipFreezings },
+        ]}
+        ]})
 
     if (!userData) {
+
       throw ApiError.NotFound('Пользователь не найден')
     }
 
     return userData
+  }
+
+  async getALl(id) {
+    const usersData = await Users.findAll({include: [{model: Trainers}, {model: Roles}]})
+
+    return usersData
   }
 
   async updateRole(idUser, idRole) {

@@ -23,6 +23,7 @@ class MembershipService {
     const membershipsData = await Memberships.findAll({
       include: [
         { model: MembershipTypes },
+        { model: MembershipTypes },
         {
           model: Statuses,
           where: { name: 'Активный' },

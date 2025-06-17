@@ -6,5 +6,6 @@ const router = Router()
 
 router.post('/:id', checkAuth, UserMembershipsController.create)
 router.get('/', checkAuth, UserMembershipsController.getAllUserMemberships)
+router.put('/freezing', UserMembershipsController.freezingMembership)
 
 export default router

@@ -100,7 +100,6 @@ const Memberships = sequelize.define("Memberships", {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
   name: {type: DataTypes.STRING(100), allowNull: false, required: true},
   description: {type: DataTypes.TEXT, allowNull: false, required: true},
-  photo: {type: DataTypes.STRING(255), allowNull: false, required: true},
   durationDays: {type: DataTypes.INTEGER, allowNull: false, required: true},
   isFreezing: {type: DataTypes.BOOLEAN, allowNull: false, required: true},
   freezingDays: {type: DataTypes.INTEGER, allowNull: false, defaultValue: 0},
@@ -127,6 +126,7 @@ const UserMemberships = sequelize.define("UserMemberships", {
   dateStart: {type: DataTypes.DATE, allowNull: false, required: true},
   dateEnd: {type: DataTypes.DATE, allowNull: false, required: true},
   freezingDays: {type: DataTypes.INTEGER, allowNull: false, defaultValue: 0},
+  qrCode: { type: DataTypes.STRING, allowNull: false, unique: true }
 })
 
 const UserMembershipFreezings = sequelize.define("UserMembershipFreezings", {
@@ -134,8 +134,18 @@ const UserMembershipFreezings = sequelize.define("UserMembershipFreezings", {
   dateStart: {type: DataTypes.DATE, allowNull: false, required: true},
   dateEnd: {type: DataTypes.DATE, allowNull: false, required: true},
   freezingDays: {type: DataTypes.INTEGER, allowNull: false, required: true},
-  document: {type: DataTypes.STRING(255), allowNull: false, required: true},
 })
+
+const Visit = sequelize.define('Visit', {
+  id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+  type: {type: DataTypes.ENUM('Вход', 'Выход'), allowNull: false, required: true},
+})
+
+Users.hasMany(Visit);
+Visit.belongsTo(Users);
+
+UserMemberships.hasMany(Visit);
+Visit.belongsTo(UserMemberships);
 
 UserMemberships.hasMany(UserMembershipFreezings)
 UserMembershipFreezings.belongsTo(UserMemberships)
@@ -209,11 +219,41 @@ Trainers.belongsTo(Users)
 Users.hasMany(Reviews)
 Reviews.belongsTo(Users)
 
+Statuses.hasMany(Reviews)
+Reviews.belongsTo(Statuses)
+
 Users.hasMany(Tokens)
 Tokens.belongsTo(Users)
 
 Roles.hasMany(Users)
 Users.belongsTo(Roles)
+
+
+const Payments = sequelize.define('Payments', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  amount: { type: DataTypes.INTEGER, allowNull: false },
+  paymentDate: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
+  paymentMethod: { type: DataTypes.STRING(50), allowNull: false },
+  description: { type: DataTypes.TEXT, allowNull: true },
+  type: {type: DataTypes.STRING(20), allowNull: false},
+});
+
+const PaymentStatuses = sequelize.define('PaymentStatuses', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.STRING(50), unique: true, allowNull: false },
+});
+
+Users.hasMany(Payments);
+Payments.belongsTo(Users);
+
+Memberships.hasMany(Payments);
+Payments.belongsTo(Memberships);
+
+UserTrainingPackages.hasMany(Payments);
+Payments.belongsTo(UserTrainingPackages);
+
+PaymentStatuses.hasMany(Payments);
+Payments.belongsTo(PaymentStatuses);
 
 export {
   Users,
@@ -235,5 +275,8 @@ export {
   MembershipTypes,
   Promotions,
   UserMemberships,
-  UserMembershipFreezings
+  UserMembershipFreezings,
+  Payments,
+  PaymentStatuses,
+  Visit
 }

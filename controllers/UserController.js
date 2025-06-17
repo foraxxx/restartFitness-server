@@ -1,5 +1,5 @@
 import UserService from "../service/userService.js"
-import {Roles} from "../models/index.js"
+import {Roles, Users} from "../models/index.js"
 import ApiError from "../exceptions/apiErrors.js"
 import TrainerService from "../service/trainerService.js"
 import path from "path"
@@ -15,7 +15,7 @@ class UserController {
 
       const userData = await UserService.registration(newName, newSurName, number)
 
-      res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+      res.cookie('refreshToken', userData.refreshToken, {maxAge: 14 * 24 * 60 * 60 * 1000, httpOnly: true})
 
       return res.json(userData)
     } catch(error) {
@@ -29,7 +29,7 @@ class UserController {
       const { refreshToken } = req.cookies
 
       const userData = await UserService.login(number, refreshToken)
-      res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+      res.cookie('refreshToken', userData.refreshToken, {maxAge: 14 * 24 * 60 * 60 * 1000, httpOnly: true})
 
       return res.json(userData)
     } catch(error) {
@@ -54,7 +54,8 @@ class UserController {
     try {
       const { refreshToken } = req.cookies
       const userData = await UserService.refresh(refreshToken)
-      res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+      // res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+      res.cookie('refreshToken', userData.refreshToken, {maxAge: 20 * 60 * 1000, httpOnly: true})
 
       return res.json(userData)
     } catch(error) {
@@ -63,7 +64,7 @@ class UserController {
   }
 
   async getUsers(req, res) {
-    const users = await UserService.getUsers()
+    const users = await UserService.getALl()
 
     return res.json(users)
   }
@@ -124,6 +125,36 @@ class UserController {
       return res.json({...userData.toJSON(), message: 'Пользователь успешно изменён'})
     } catch(error) {
       next(error)
+    }
+  }
+
+  async create(req, res) {
+    try {
+      const { name, surName, number, role } = req.body;
+      console.log(`\n${name}, ${surName}, ${number}, ${role}, \n`)
+      // Проверка на уникальность номера
+      const existingUser = await Users.findOne({ where: { number } });
+      if (existingUser) {
+        return res.status(400).json({ message: "Пользователь с таким номером уже существует" });
+      }
+
+      // Найти роль по имени
+      const userRole = await Roles.findOne({ where: { name: role } });
+      if (!userRole) {
+        return res.status(400).json({ message: "Роль не найдена" });
+      }
+
+      const newUser = await Users.create({
+        name,
+        surName,
+        number,
+        RoleId: userRole.id
+      });
+
+      return res.status(201).json(newUser);
+    } catch (error) {
+      console.error("Ошибка при создании пользователя:", error);
+      return res.status(500).json({ message: "Ошибка сервера" });
     }
   }
 }

@@ -28,6 +28,10 @@ import cookieParser from "cookie-parser"
 import fileUpload from "express-fileupload"
 import errorsMiddleware from "./middlewares/errorsMiddleware.js"
 import path from "path"
+import webhookRouter from "./router/webhook.js"
+import './cron/cron.js'
+import './cron/membershipFreezing.js'
+import './cron/replaceMemberhipStatus.js'
 
 dotenv.config()
 const PORT = process.env.PORT || 4000
@@ -37,8 +41,11 @@ app.use(cors({
   credentials: true,
   origin:process.env.CLIENT_URL
 }))
+
 app.use(cookieParser())
 app.use(express.json())
+
+app.use('/api/payments/notification', webhookRouter)
 app.use(express.static(path.resolve(process.cwd(), 'static')));
 app.use(fileUpload({}))
 app.use('/api', router)
@@ -47,7 +54,7 @@ app.use(errorsMiddleware)
 const start = async () => {
   try {
     await sequelize.authenticate()
-    await sequelize.sync()
+    await sequelize.sync({ alter: true })
     app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
   } catch(error) {
     console.log(error)

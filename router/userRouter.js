@@ -10,9 +10,10 @@ router.post('/registration', UserController.registration)
 router.post('/login', UserController.login)
 router.post('/logout', checkAuth, UserController.logout)
 router.get('/refresh', UserController.refresh)
-router.get('/users', checkRole, UserController.getUsers)
+router.get('/all', checkRole, UserController.getUsers)
 router.get('/:id', UserController.getOne)
 router.put('/changeRole/:id', checkRole, UserController.changeRole)
+router.post('/create', UserController.create)
 
 export default router
 
