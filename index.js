@@ -29,9 +29,7 @@ import fileUpload from "express-fileupload"
 import errorsMiddleware from "./middlewares/errorsMiddleware.js"
 import path from "path"
 import webhookRouter from "./router/webhook.js"
-import './cron/cron.js'
-import './cron/membershipFreezing.js'
-import './cron/replaceMemberhipStatus.js'
+import './cron/cronRunner.js'
 
 dotenv.config()
 const PORT = process.env.PORT || 4000
