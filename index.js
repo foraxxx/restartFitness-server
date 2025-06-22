@@ -35,10 +35,19 @@ dotenv.config()
 const PORT = process.env.PORT || 4000
 
 const app = express()
+// app.use(cors({
+//   credentials: true,
+//   origin:process.env.CLIENT_URL
+// }))
+
 app.use(cors({
+  origin: process.env.CLIENT_URL,
   credentials: true,
-  origin:process.env.CLIENT_URL
-}))
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
+app.options('*', cors());
 
 app.use(cookieParser())
 app.use(express.json())
