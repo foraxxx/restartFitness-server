@@ -2,7 +2,6 @@ import { Reviews, Users, Statuses } from '../models/index.js';
 
 class ReviewsService {
   async create({ description, rating, isAnonymous, UserId }) {
-    // Если нужно, можно принудительно задать статус "на проверке", например StatusId = 1
 
     const status = await Statuses.findOne({where: {name: "На проверке"}})
     return await Reviews.create({

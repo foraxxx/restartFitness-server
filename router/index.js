@@ -11,6 +11,7 @@ import paymentRouter from "./paymentRouter.js"
 import visitRouter from "./visitRouter.js"
 import statusRouter from "./statusRouter.js"
 import typesRouter from "./typesRouter.js"
+import analyticRouter from "./analyticRouter.js"
 
 const router = new Router()
 
@@ -26,5 +27,6 @@ router.use('/visit', checkAuth, visitRouter)
 router.use('/reviews', checkAuth, reviewsRouter)
 router.use('/statuses', statusRouter)
 router.use('/types', typesRouter)
+router.use('/analytic', analyticRouter)
 
 export default router

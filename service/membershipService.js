@@ -3,7 +3,7 @@ import ApiError from "../exceptions/apiErrors.js"
 
 class MembershipService {
   async create(membership) {
-    const membershipData = await Memberships.create(membership, {include: [{model: MembershipTypes}, {model: Statuses}]})
+    const membershipData = await Memberships.create(membership)
 
     const fullMembershipData = await Memberships.findOne({
       where: { id: membershipData.id },

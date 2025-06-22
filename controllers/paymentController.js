@@ -76,7 +76,7 @@ class PaymentController {
 
       const response = await yooKassa.createPayment({
         amount: {
-          value: amount.toFixed(2),
+          value: Number(amount).toFixed(2),
           currency: 'RUB',
         },
         payment_method_data: {
