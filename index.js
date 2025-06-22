@@ -35,17 +35,10 @@ dotenv.config()
 const PORT = process.env.PORT || 4000
 
 const app = express()
-// app.use(cors({
-//   credentials: true,
-//   origin:process.env.CLIENT_URL
-// }))
-
 app.use(cors({
-  origin: 'https://restart-fitness-client.vercel.app',
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+  origin:process.env.CLIENT_URL
+}))
 
 app.options('*', cors());
 
